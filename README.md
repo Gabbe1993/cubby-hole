@@ -25,5 +25,5 @@ Use `telnet 0.0.0.0 1337`
 
 Cubbyhole server uses only hard state transitions, since both server and client can initiate and remove states (there are no timeouts removing the states, implying soft state)
 
-![state diagram](https://raw.githubusercontent.com/mrow4a/Cubbyhole/master/StateDiagram.png)
+![state diagram](https://github.com/Gabbe1993/Cubbyhole/blob/master/StateDiagram.png)
 
