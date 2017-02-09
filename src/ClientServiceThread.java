@@ -46,13 +46,13 @@ class ClientServiceThread extends Thread {
                 if (!Server.isRunning) {
                     System.out.print("Server has already stopped" + "\n");
                     out.writeBytes("Server has already stopped" + "\n");
-                    isRunning = false;
+                    clientSocket.close();
                 }
                 switch (command) {
                     case QUIT:
                         isRunning = false;
-                        Server.isRunning = false;
                         out.writeBytes("Bye!\n");
+                        clientSocket.close();
                         break;
                     case HELP:
                         out.writeBytes("HELP:\n" +
@@ -64,7 +64,7 @@ class ClientServiceThread extends Thread {
                                 "QUIT Terminates the connection.\n");
                         break;
                     case DROP:
-                        out.writeBytes("!" + command + ": ok ");
+                        out.writeBytes("!" + command + ": ok " + "\n");
                         Server.storedMessage = "";
                         break;
                     case LOOK:
