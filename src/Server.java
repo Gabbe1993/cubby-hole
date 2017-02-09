@@ -5,9 +5,8 @@ import java.net.Socket;
 public class Server {
     private ServerSocket serverSocket;
     static boolean isRunning = true;
-    final static int PORT = 9999;
+    final static int PORT = 1337;
     static volatile String storedMessage;
-
 
     public Server() {
         try {
@@ -35,7 +34,7 @@ public class Server {
             System.exit(-1);
         }
     }
-
+    
     public static void main(String[] args) {
         new Server();
 
