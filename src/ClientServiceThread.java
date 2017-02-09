@@ -28,16 +28,15 @@ class ClientServiceThread extends Thread {
     @Override
     public void run() {
         BufferedReader in = null;
-        PrintWriter out = null;
+        DataOutputStream out = null;
         System.out.println(
                 "Accepted Client Address - " + clientSocket.getInetAddress().getHostName());
         try {
             in = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
-            out = new PrintWriter(
-                    new OutputStreamWriter(clientSocket.getOutputStream()));
+            out = new DataOutputStream(clientSocket.getOutputStream());
 
-            out.print("!HELLO");
+            out.writeBytes("!HELLO -  For help insert HELP" + "\n");
             while (isRunning) {
                 String[] lines = in.readLine().split("\\s", 2);
                 String command = lines[0].toUpperCase();
@@ -45,52 +44,52 @@ class ClientServiceThread extends Thread {
                 //System.out.println("Got: " + command);
 
                 if (!Server.isRunning) {
-                    System.out.print("Server has already stopped");
-                    out.println("Server has already stopped");
-                    out.flush();
+                    System.out.print("Server has already stopped" + "\n");
+                    out.writeBytes("Server has already stopped" + "\n");
                     isRunning = false;
                 }
                 switch (command) {
                     case QUIT:
                         isRunning = false;
                         Server.isRunning = false;
-                        out.println("Bye!");
+                        out.writeBytes("Bye!\n");
                         break;
                     case HELP:
-                        out.print("HELP:\n" +
+                        out.writeBytes("HELP:\n" +
                                 "PUT < message > Places a new message in the cubbyhole.\n" +
                                 "GET Takes the message out of the cubbyhole and displays it.\n" +
                                 "LOOK Displays message without taking it out of the cubbyhole.\n" +
                                 "DROP Takes the message out of the cubbyhole without displaying it.\n" +
                                 "HELP Displays some help message.\n" +
-                                "QUIT Terminates the connection.");
+                                "QUIT Terminates the connection.\n");
                         break;
                     case DROP:
-                        out.println("!" + command + ": ok ");
+                        out.writeBytes("!" + command + ": ok ");
                         Server.storedMessage = "";
                         break;
                     case LOOK:
-                        out.println("!" + command + ": " + Server.storedMessage);
+                        out.writeBytes("!" + command + ": " + Server.storedMessage + "\n");
                         break;
                     case GET:
-                        out.println("!" + command + ": " + Server.storedMessage);
+                        out.writeBytes("!" + command + ": " + Server.storedMessage + "\n");
                         Server.storedMessage = "";
                         break;
                     case PUT:
-                        out.println("!" + command + ": ok ");
+                        out.writeBytes("!" + command + ": ok " + "\n");
                         try {
                             Server.storedMessage = lines[1];
-                            System.out.println("Stored message: " + Server.storedMessage);
+                            System.out.println("Stored message: " + Server.storedMessage + "\n");
                         } catch (ArrayIndexOutOfBoundsException ignored) {
                             // no message
                         }
                         break;
                     default:
                         if (!command.isEmpty())
-                            out.println("Invalid command: " + command);
+                            out.writeBytes("Invalid command: " + command + "\n");
                         out.flush();
                         break;
                 }
+                out.flush();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +98,7 @@ class ClientServiceThread extends Thread {
                 in.close();
                 out.close();
                 clientSocket.close();
-                System.out.println("...Stopped");
+                System.out.println("...Stopped" + "\n");
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
